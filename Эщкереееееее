@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>❤️ Для тебя ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a1a, #1a0a2e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .wrapper {
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        /* Экран 1 - чек */
+        .screen {
+            transition: all 0.3s ease;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .big-btn {
+            background: linear-gradient(135deg, #ff3366, #ff6699);
+            border: none;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            font-size: 100px;
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(255,51,102,0.4);
+            transition: transform 0.2s;
+            margin: 40px auto;
+        }
+
+        .big-btn:active {
+            transform: scale(0.95);
+        }
+
+        .hint {
+            color: rgba(255,255,255,0.6);
+            font-size: 16px;
+            margin-top: 30px;
+        }
+
+        /* Экран 2 - Предложение */
+        .card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 30px 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .card h2 {
+            color: #ff6699;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            color: white;
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+
+        .btn-yes {
+            background: #4caf50;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(76,175,80,0.3);
+        }
+
+        .btn-no {
+            background: #f44336;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.1s ease;
+        }
+
+        .btn-yes:active, .btn-no:active {
+            transform: scale(0.97);
+        }
+
+        /* Экран 3 - Счастливый конец */
+        .happy-card {
+            background: linear-gradient(135deg, #ff6699, #ff3366);
+            border-radius: 30px;
+            padding: 50px 20px;
+        }
+
+        .happy-card h1 {
+            color: white;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .happy-card p {
+            color: white;
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
+        .heart-rain {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .heart-drop {
+            position: absolute;
+            font-size: 30px;
+            animation: fall 3s linear forwards;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- ЭКРАН 1: Начальное сердечко -->
+        <div id="screen1" class="screen">
+            <button id="startBtn" class="big-btn">❤️</button>
+            <div class="hint">👇 Нажми на сердечко 👇</div>
+        </div>
+
+        <!-- ЭКРАН 2: чек -->
+        <div id="screen2" class="screen hidden">
+            <div class="card">
+                <h2 id="herName">Моя хорошая</h2>
+                <p id="proposalText">Ты — самая лучшая!<br>Я очень тебя ценю.<br><strong>Ты будешь со мной играть?</strong></p>
+                <button id="yesBtn" class="btn-yes">ДА! ❤️</button>
+                <button id="noBtn" class="btn-no">НЕТ 💔</button>
+            </div>
+        </div>
+
+        <!-- ЭКРАН 3: чек -->
+        <div id="screen3" class="screen hidden">
+            <div class="happy-card">
+                <h1>🎉 Я ТЕБЯ ЦЕНЮ! 🎉</h1>
+                <div style="font-size: 60px;">❤️💖💗</div>
+                <p id="loveMessage">Спасибо, что сказала ДА!</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="heartRain" class="heart-rain"></div>
+
+    <script>
+        
+        const SETTINGS = {
+            herName: "ЕвахонЯкамаз",           
+            yourName: "Эщкерепасынок",            
+            proposalText: "Ты — самое тёплое, что есть в моей жизни. ✨ Твоя улыбка делает меня грустным. Я не хочу быть рядом с тобой. ❤️",
+            loveMessage: "Спасибо, что ты есть! 💕 Ты сделала мой день. С любовью, " + "Дима"  
+        };
+
+        
+        SETTINGS.loveMessage = "Спасибо, что ты есть! 💕 Ты сделала мой день хуже. С любовью, " + SETTINGS.yourName;
+
+        
+        let currentScreen = 1; // 1,2,3
+        let noBtn = document.getElementById('noBtn');
+        
+        function showScreen(screenNum) {
+            document.getElementById('screen1').classList.add('hidden');
+            document.getElementById('screen2').classList.add('hidden');
+            document.getElementById('screen3').classList.add('hidden');
+            
+            if (screenNum === 1) document.getElementById('screen1').classList.remove('hidden');
+            if (screenNum === 2) document.getElementById('screen2').classList.remove('hidden');
+            if (screenNum === 3) document.getElementById('screen3').classList.remove('hidden');
+            
+            currentScreen = screenNum;
+        }
+        
+        function addHeartDrop() {
+            const heart = document.createElement('div');
+            heart.className = 'heart-drop';
+            const hearts = ['❤️', '💖', '💗', '💓', '💕', '💝', '💘', '💖'];
+            heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            heart.style.fontSize = (Math.random() * 30 + 20) + 'px';
+            heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            document.getElementById('heartRain').appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 3000);
+        }
+        
+        function startFireworks() {
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => addHeartDrop(), i * 50);
+            }
+            
+            setInterval(() => {
+                if (currentScreen === 3) {
+                    addHeartDrop();
+                }
+            }, 300);
+        }
+        
+        
+        function moveNoButton() {
+            if (!noBtn) return;
+            const maxX = window.innerWidth - 120;
+            const maxY = window.innerHeight - 150;
+            const newX = Math.random() * maxX;
+            const newY = Math.random() * maxY;
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = Math.max(10, newX) + 'px';
+            noBtn.style.top = Math.max(50, newY) + 'px';
+            noBtn.style.zIndex = '1000';
+        }
+        
+        
+        document.getElementById('startBtn').addEventListener('click', function() {
+            
+            document.getElementById('herName').innerHTML = SETTINGS.herName + ' ❤️';
+            document.getElementById('proposalText').innerHTML = SETTINGS.proposalText;
+            showScreen(2);
+            
+            
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => addHeartDrop(), i * 50);
+            }
+            
+            
+            setTimeout(() => moveNoButton(), 100);
+        });
+        
+        
+        document.getElementById('yesBtn').addEventListener('click', function() {
+            showScreen(3);
+            document.getElementById('loveMessage').innerHTML = SETTINGS.loveMessage;
+            startFireworks();
+        });
+        
+        
+        if (noBtn) {
+            noBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                moveNoButton();
+                addHeartDrop(); // добавляем сердечко в месте нажатия
+            });
+            
+            noBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                moveNoButton();
+                addHeartDrop();
+            });
+        }
+        
+        
+        window.addEventListener('resize', function() {
+            if (currentScreen === 2 && noBtn) {
+                moveNoButton();
+            }
+        });
+        
+        
+        document.body.style.cursor = 'pointer';
+        
+        console.log('Готово! Жми на сердечко ❤️');
+    </script>
+</body>
+</html>
