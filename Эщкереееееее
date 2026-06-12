@@ -286,7 +286,7 @@
                 e.preventDefault();
                 e.stopPropagation();
                 moveNoButton();
-                addHeartDrop(); // добавляем сердечко в месте нажатия
+                addHeartDrop(); 
             });
             
             noBtn.addEventListener('touchstart', function(e) {
